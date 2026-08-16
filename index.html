@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>H.E.E. Pest Control Training</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #00ff66;
+            font-family: Consolas, monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #gameContainer {
+            width: 92%;
+            max-width: 900px;
+            text-align: center;
+            border: 2px solid #00ff66;
+            padding: 20px;
+            box-shadow: 0 0 20px #00ff66;
+        }
+
+        h1 {
+            font-size: 25px;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        #instructions {
+            margin-bottom: 15px;
+            color: #aaa;
+        }
+
+        #scoreBox {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        #playArea {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border: 2px solid #00ff66;
+            overflow: hidden;
+            background: #050505;
+        }
+
+        #rat {
+            position: absolute;
+            left: 50px;
+            top: 50px;
+            font-size: 45px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #winScreen {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #00ff66;
+        }
+
+        #winScreen h2 {
+            margin-bottom: 10px;
+        }
+
+        .digit {
+            margin-top: 15px;
+            font-size: 35px;
+            color: white;
+            text-shadow: 0 0 10px white;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="gameContainer">
+
+        <h1>H.E.E. PEST CONTROL TRAINING</h1>
+
+        <p id="instructions">
+            CLICK THE ESCAPED SPECIMEN 10 TIMES.
+        </p>
+
+        <div id="scoreBox">
+            CAPTURES: <span id="score">0</span>/10
+        </div>
+
+        <div id="playArea">
+            <div id="rat">🐀</div>
+        </div>
+
+        <div id="winScreen" class="hidden">
+
+            <h2>TRAINING COMPLETE</h2>
+
+            <p>SPECIMEN SUCCESSFULLY CONTAINED.</p>
+
+            <p class="digit">
+                CLEARANCE DIGIT: 1
+            </p>
+
+        </div>
+
+    </div>
+
+    <script>
+        const rat = document.getElementById("rat");
+        const playArea = document.getElementById("playArea");
+        const scoreText = document.getElementById("score");
+        const winScreen = document.getElementById("winScreen");
+
+        let score = 0;
+
+        let x = 50;
+        let y = 50;
+
+        let dx = 2.5;
+        let dy = 2.5;
+
+        let gameWon = false;
+
+        function moveRat() {
+
+            if (gameWon) return;
+
+            const maxX = playArea.clientWidth - rat.offsetWidth;
+            const maxY = playArea.clientHeight - rat.offsetHeight;
+
+            x += dx;
+            y += dy;
+
+            if (x <= 0) {
+                x = 0;
+                dx = Math.abs(dx);
+            }
+
+            if (x >= maxX) {
+                x = maxX;
+                dx = -Math.abs(dx);
+            }
+
+            if (y <= 0) {
+                y = 0;
+                dy = Math.abs(dy);
+            }
+
+            if (y >= maxY) {
+                y = maxY;
+                dy = -Math.abs(dy);
+            }
+
+            rat.style.left = x + "px";
+            rat.style.top = y + "px";
+
+            requestAnimationFrame(moveRat);
+        }
+
+        rat.addEventListener("click", function() {
+
+            if (gameWon) return;
+
+            score++;
+
+            scoreText.textContent = score;
+
+            if (score === 4 || score === 8) {
+                dx *= 1.4;
+                dy *= 1.4;
+            }
+
+            if (score >= 10) {
+
+                gameWon = true;
+
+                rat.style.display = "none";
+
+                winScreen.classList.remove("hidden");
+            }
+        });
+
+        moveRat();
+    </script>
+
+</body>
+  </html>
